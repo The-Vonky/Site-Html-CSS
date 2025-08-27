@@ -1,11 +1,692 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Demon's Souls - Prepare-se para Morrer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff6b35, #d63031);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+        
+        .cursor-trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: #ff6b35;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        
+        /* Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: #ff6b35;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            opacity: 0.1;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        nav.scrolled {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 50px;
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ff6b35;
+            text-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b35, #d63031);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a:hover {
+            color: #ff6b35;
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #000 0%, #1a1a2e 50%, #16213e 100%);
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="fire" cx="50%" cy="50%"><stop offset="0%" style="stop-color:%23ff6b35;stop-opacity:0.3"/><stop offset="100%" style="stop-color:%23000;stop-opacity:0"/></radialGradient></defs><circle cx="500" cy="500" r="300" fill="url(%23fire)"/></svg>') center/cover;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+        
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            max-width: 800px;
+            animation: heroFadeIn 2s ease;
+        }
+        
+        @keyframes heroFadeIn {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #ff6b35, #d63031);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            text-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.3)); }
+            50% { filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.8)); }
+        }
+        
+        .hero .subtitle {
+            font-size: 24px;
+            color: #ccc;
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        .hero .tagline {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            color: #ff6b35;
+            margin-bottom: 50px;
+            text-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 20px 50px;
+            background: linear-gradient(135deg, #ff6b35, #d63031);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
+        }
+        
+        /* Floating Elements */
+        .floating-souls {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .soul {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ff6b35;
+            border-radius: 50%;
+            animation: soulFloat 8s infinite linear;
+            box-shadow: 0 0 10px #ff6b35;
+        }
+        
+        @keyframes soulFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        /* Game Features Section */
+        .features {
+            padding: 100px 50px;
+            background: linear-gradient(180deg, #000 0%, #1a0a0a 100%);
+            position: relative;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background: rgba(26, 26, 46, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #ff6b35, #d63031, #ff6b35);
+            border-radius: 22px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            color: #ff6b35;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .feature-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .feature-card p {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        /* Screenshots Section */
+        .screenshots {
+            padding: 100px 50px;
+            background: #0a0a0a;
+        }
+        
+        .screenshots h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, #fff, #ff6b35);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .screenshot-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .screenshot {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+        }
+        
+        .screenshot::before {
+            content: '🎮';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            opacity: 0.5;
+        }
+        
+        .screenshot:hover {
+            transform: scale(1.05);
+            border-color: #ff6b35;
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.3);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 50px;
+            background: #000;
+            text-align: center;
+            border-top: 1px solid rgba(255, 107, 53, 0.3);
+        }
+        
+        footer p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                gap: 20px;
+            }
+            
+            .hero .subtitle {
+                font-size: 18px;
+            }
+            
+            .hero .tagline {
+                font-size: 24px;
+            }
+            
+            .features, .screenshots {
+                padding: 50px 20px;
+            }
+            
+            .feature-card {
+                padding: 30px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Site Novo</h1>
+    <div class="cursor"></div>
+    <div class="particles"></div>
+    
+    <nav>
+        <div class="nav-content">
+            <div class="logo">DEMON'S SOULS</div>
+            <ul class="nav-links">
+                <li><a href="#home">Início</a></li>
+                <li><a href="#features">Características</a></li>
+                <li><a href="#gallery">Galeria</a></li>
+                <li><a href="#download">Baixar</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <section class="hero" id="home">
+        <div class="floating-souls"></div>
+        <div class="hero-content">
+            <h1>DEMON'S SOULS</h1>
+            <p class="subtitle">UMA EXPERIÊNCIA ÉPICA DE JOGO</p>
+            <p class="tagline">Prepare-se para Morrer</p>
+            <a href="#features" class="cta-button">EXPLORE AS TREVAS</a>
+        </div>
+    </section>
+    
+    <section class="features" id="features">
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">⚔️</span>
+                <h3>Combate Desafiador</h3>
+                <p>Domine a arte do timing preciso e pensamento estratégico. Cada encontro com inimigos é um teste de habilidade onde a morte ensina lições valiosas.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🏰</span>
+                <h3>Arquitetura Gótica</h3>
+                <p>Explore o reino assombrosamente belo de Boletaria, com seus designs intrincados de castelos e ambientes atmosféricos.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">👹</span>
+                <h3>Batalhas Épicas</h3>
+                <p>Enfrente demônios aterrorizantes e chefes colossais que levarão suas habilidades ao limite em encontros inesquecíveis.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔥</span>
+                <h3>Sistema de Almas</h3>
+                <p>Colete almas de inimigos caídos para fortalecer seu personagem, mas cuidado - a morte significa perder tudo.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🌙</span>
+                <h3>Tendência Mundial</h3>
+                <p>Suas ações influenciam a tendência do mundo entre luz e trevas, mudando a dificuldade dos inimigos e itens disponíveis.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">👤</span>
+                <h3>Integração Online</h3>
+                <p>Deixe mensagens para outros jogadores, veja onde eles morreram e experimente mecânicas multiplayer inovadoras.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="screenshots" id="gallery">
+        <h2>Capturas de Tela</h2>
+        <div class="screenshot-gallery">
+            <div class="screenshot"></div>
+            <div class="screenshot"></div>
+            <div class="screenshot"></div>
+            <div class="screenshot"></div>
+            <div class="screenshot"></div>
+            <div class="screenshot"></div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2024 Demon's Souls. Todos os direitos reservados. | Esta é uma página tributo feita por fãs.</p>
+    </footer>
+    
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const trails = [];
+        
+        // Create cursor trails
+        for (let i = 0; i < 5; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            document.body.appendChild(trail);
+            trails.push(trail);
+        }
+        
+        let mouseX = 0, mouseY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+            
+            trails.forEach((trail, index) => {
+                setTimeout(() => {
+                    trail.style.left = mouseX + 'px';
+                    trail.style.top = mouseY + 'px';
+                }, index * 50);
+            });
+        });
+        
+        // Cursor hover effects
+        document.querySelectorAll('a, .feature-card, .screenshot').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(2)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Particle System
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            
+            document.querySelector('.particles').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+        
+        setInterval(createParticle, 300);
+        
+        // Floating Souls
+        function createSoul() {
+            const soul = document.createElement('div');
+            soul.className = 'soul';
+            soul.style.left = Math.random() * 100 + '%';
+            soul.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            soul.style.animationDelay = Math.random() * 2 + 's';
+            
+            document.querySelector('.floating-souls').appendChild(soul);
+            
+            setTimeout(() => {
+                soul.remove();
+            }, 10000);
+        }
+        
+        setInterval(createSoul, 800);
+        
+        // Navigation scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Feature cards animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+        
+        // Screenshots hover effect with sound simulation
+        document.querySelectorAll('.screenshot').forEach(screenshot => {
+            screenshot.addEventListener('mouseenter', function() {
+                // Simulate sound effect
+                this.style.backgroundColor = 'rgba(255, 107, 53, 0.1)';
+            });
+            
+            screenshot.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
+        });
+        
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero::before');
+            const speed = scrolled * 0.5;
+            
+            if (parallax) {
+                document.querySelector('.hero').style.transform = `translateY(${speed}px)`;
+            }
+        });
+        
+        // Add interactive title effects
+        const title = document.querySelector('.hero h1');
+        title.addEventListener('mouseenter', () => {
+            title.style.animation = 'none';
+            title.style.textShadow = '0 0 50px rgba(255, 107, 53, 1)';
+        });
+        
+        title.addEventListener('mouseleave', () => {
+            title.style.animation = 'titleGlow 3s ease-in-out infinite';
+            title.style.textShadow = '0 0 30px rgba(255, 107, 53, 0.5)';
+        });
+    </script>
 </body>
 </html>
